@@ -1,0 +1,115 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For Bagas 💖</title>
+<style>
+body {
+    margin:0;
+    font-family:sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    color:#ffdee9; /* brighter text for visibility */
+}
+.card {
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(12px);
+    border-radius: 25px;
+    padding: 40px;
+    text-align:center;
+    width: 340px;
+    opacity:0;
+    transform:translateY(20px);
+    transition: all 0.8s ease;
+    box-shadow:0 20px 40px rgba(0,0,0,0.5);
+    color:#ffdee9;
+}
+.show {opacity:1; transform:translateY(0);}
+button {padding:12px 25px; border:none; border-radius:50px; font-size:16px; cursor:pointer; margin:8px; transition: all 0.3s; color:#fff;}
+button:hover {transform: scale(1.1); box-shadow:0 0 15px #ff6f91;}
+.yes {background:#ff6f91; color:white;}
+.no {background:#b26dff; color:white; position:absolute;}
+.hidden {display:none !important;}
+img, video {border-radius:20px; margin-top:20px; box-shadow:0 10px 30px rgba(0,0,0,0.5);}
+.heart {position:absolute; animation:float 8s linear infinite;}
+@keyframes float {0% {transform:translateY(100vh) scale(0.5); opacity:0;} 20% {opacity:1;} 100% {transform:translateY(-10vh) scale(1.2); opacity:0;}}
+.claim-text {margin-top:15px; font-size:14px; color:#ffdee9; animation:glowBlink 1.8s ease-in-out infinite;}
+@keyframes glowBlink {0% {opacity:0.6;text-shadow:0 0 5px #ff6f91;} 50% {opacity:1;text-shadow:0 0 15px #ff6f91;} 100% {opacity:0.6;text-shadow:0 0 5px #ff6f91;}}
+input[type=password]{transition:0.3s; color:#000; font-weight:bold;}
+.number-pad {display:flex; flex-wrap:wrap; justify-content:center; margin-top:20px;}
+.number-pad button {width:60px; height:60px; font-size:20px; margin:5px; background:#ff6f91; color:#fff;}
+.number-pad button:hover {background:#ff4d6d;}
+#gameArea {position:relative; width:100%; height:300px; border:2px solid #ff6f91; border-radius:15px; margin-top:20px; background:rgba(255,255,255,0.1); overflow:hidden;}
+.claw {position:absolute; width:50px; height:50px; background:#ff6f91; border-radius:10px; top:0; left:calc(50% - 25px); transition: all 0.2s;}
+.item {position:absolute; width:40px; height:40px;}
+</style>
+</head>
+<body><!-- PASSWORD SCREEN --><div id="passwordScreen" class="card show">
+<h2>Enter your special code 💖</h2>
+<p>Clue: Tanggal jadian kita</p>
+<input type="password" id="pwdInput" placeholder="DDMMYY" style="padding:10px 15px; border-radius:10px; border:none; font-size:16px; width:140px; text-align:center;" readonly>
+<div class="number-pad">
+<button onclick="appendNumber('0')">0</button>
+<button onclick="appendNumber('1')">1</button>
+<button onclick="appendNumber('2')">2</button>
+<button onclick="appendNumber('3')">3</button>
+<button onclick="appendNumber('4')">4</button>
+<button onclick="appendNumber('5')">5</button>
+<button onclick="appendNumber('6')">6</button>
+<button onclick="appendNumber('7')">7</button>
+<button onclick="appendNumber('8')">8</button>
+<button onclick="appendNumber('9')">9</button>
+<button onclick="clearNumber()">C</button>
+<button onclick="checkPassword()">OK</button>
+</div>
+<p id="pwdError" style="color:#ff4d6d; margin-top:10px; display:none;">Sandi salah! 😢</p>
+</div><!-- MUSIC SCREEN --><div id="musicScreen" class="card hidden">
+<h3>🎵 Now Playing</h3>
+<h2>Bulan yang Baik</h2>
+<p>by Sal Priadi</p>
+<p><i>Your favorite song and artist 🤍</i></p>
+<button onclick="startWebsite()">Play & Continue</button>
+</div><!-- START SCREEN --><div id="start" class="card hidden"><h2 id="typing"></h2><button onclick="showQuestion()">Continue 🤍</button></div><!-- QUESTION SCREEN --><div id="question" class="card hidden">
+<h2>Will You Be My Valentine? 💖</h2>
+<button class="yes" onclick="showLove()">YES 💍</button>
+<button class="no" id="noBtn">NO 😈</button>
+</div><!-- GIFT OPTION --><div id="giftOption" class="card hidden">
+<h2>Bagas… do you want a special gift from me? 💝</h2>
+<button class="yes" onclick="goToCoupons()">Yes 💖</button>
+<button class="no" onclick="noGift()">No 😢</button>
+</div><!-- COUPON SCREEN --><div id="love" class="card hidden">
+<h2>You just made me the happiest pretty gf 🥺🖤</h2>
+<p>Choose your reward, BAGAS 💖</p>
+<button onclick="openCoupon('coupon1.png')">Free Hug</button>
+<button onclick="openCoupon('coupon2.png')">Free Kiss</button>
+<button onclick="openCoupon('coupon4.png')">Free Making Love With Me</button>
+<button onclick="openCoupon('coupon3.png')">Free Homemade Food</button>
+<img src="meandyou.jpg" alt="Us" style="width:230px;"><button onclick="startGame()" style="margin-top:20px;background:#ff4d6d;color:white;">Play Mini Game 🎮</button>
+</div><!-- COUPON POPUP --><div id="couponPopup" class="hidden" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;justify-content:center;align-items:center;z-index:999;">
+<div style="background:#fff0f5;padding:30px;border-radius:20px;text-align:center;">
+<h3>Your Special Coupon 💖</h3>
+<img id="couponImage" src="" style="width:250px;border-radius:15px;margin-top:15px;">
+<p class="claim-text">📸 Screenshot untuk claim!</p>
+<button onclick="closeCoupon()" style="margin-top:15px;background:#ff6f91;color:white;">Close</button>
+</div>
+</div><!-- MINI GAME AREA --><div id="game" class="card hidden">
+<h2>Mini Game 💖</h2>
+<p>Use the claw to grab all the goodies! (← → to move, ↓ to grab)</p>
+<div id="gameArea">
+<div id="claw" class="claw"></div>
+</div>
+<p id="gameMessage"></p>
+</div><!-- ENDING POPUP --><div id="endingPopup" class="hidden" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:1002;flex-direction:column;opacity:0;transition:opacity 1.2s ease;padding:20px;">
+<div style="background:#fff0f5;padding:30px 40px;border-radius:25px;box-shadow:0 20px 50px rgba(0,0,0,0.3);max-width:360px;text-align:center;color:#4b3c2a;line-height:1.5;font-size:16px;">
+<p id="endingText">Bagas… sometimes words are never enough to show how much I care. I hope these little surprises can convey this clearly: I love you, and having you in my life makes every day brighter. 💖 You are truly special, and I want you to always know it.</p>
+<button onclick="window.open('https://wa.me/6289530536953','_blank')" style="margin-top:20px;padding:12px 25px;border:none;border-radius:30px;background:#ff6f91;color:white;font-size:16px;cursor:pointer;">The End 💖</button>
+</div>
+</div><audio id="bgMusic" src="Loveme.mp3"></audio>
+
+<script>
+// Semua script: password, music, typing effect, hearts, coupon popup, mini game mesin capit (seperti versi sebelumnya)
+</script></body>
+</html>
