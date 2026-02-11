@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For Bagas 🤍</title>
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:radial-gradient(circle at top,#1e1e2f,#0f0f18);
+    color:white;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+.card{
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(20px);
+    padding:30px;
+    border-radius:25px;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    width:340px;
+    opacity:0;
+    transform:translateY(20px);
+    transition:all 0.8s ease;
+}
+.show{opacity:1; transform:translateY(0);}
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:25px;
+    font-size:16px;
+    cursor:pointer;
+    margin:5px;
+    transition:0.3s;
+}
+button:hover{transform:scale(1.1);}
+.yes{background:#ff4d6d;color:white;}
+.no{background:#444;color:white;position:absolute;}
+.hidden{display:none !important;}
+input[type=text]{padding:10px; border-radius:10px; border:none; margin:5px; flex:1; text-align:center;}
+.heart{position:absolute;animation:float 8s linear infinite;}
+@keyframes float{
+0%{transform:translateY(100vh) scale(0.5); opacity:0;}
+20%{opacity:1;}
+100%{transform:translateY(-10vh) scale(1.2); opacity:0;}
+}
+.claim-text{
+    margin-top:10px;
+    font-size:14px;
+    letter-spacing:1px;
+    color:#ffb6c1;
+    animation:glowBlink 1.8s ease-in-out infinite;
+}
+@keyframes glowBlink{
+0%{opacity:0.6;text-shadow:0 0 5px #ff4d6d;}
+50%{opacity:1;text-shadow:0 0 15px #ff4d6d;}
+100%{opacity:0.6;text-shadow:0 0 5px #ff4d6d;}
+}
+#giftBox.pop {
+    animation: popAnim 0.3s ease forwards;
+}
+@keyframes popAnim {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD SCREEN -->
+<div id="passwordScreen" class="card show">
+    <h2>Enter your special code 💖</h2>
+    <p style="color:#ffb6c1; font-size:14px;">Clue: Tanggal jadian kita 🗓️</p>
+    <div id="pwdDisplay" style="padding:10px 0; font-size:20px; letter-spacing:5px; min-height:25px;"></div>
+    <div id="numPad" style="display:grid; grid-template-columns:repeat(3, 60px); grid-gap:10px; justify-content:center; margin:10px;"></div>
+    <div style="display:flex; justify-content:center; gap:10px;">
+        <button onclick="deleteDigit()" style="background:#444;">DEL</button>
+        <button onclick="submitPassword()" style="background:#ff4d6d;">ENTER</button>
+    </div>
+    <p id="pwdError" style="color:#ff4d6d; display:none;">Sandi salah! 😢</p>
+</div>
+
+<!-- MUSIC SCREEN -->
+<div id="musicScreen" class="card hidden">
+    <h3>🎵 Now Playing</h3>
+    <h2>Bulan yang Baik</h2>
+    <p>by Sal Priadi</p>
+    <button onclick="startWebsite()">Play & Continue</button>
+</div>
+
+<!-- TYPING START -->
+<div id="start" class="card hidden">
+    <h2 id="typing"></h2>
+    <button onclick="showQuestion()">Continue 🤍</button>
+</div>
+
+<!-- VALENTINE QUESTION -->
+<div id="question" class="card hidden">
+    <h2>Will You Be My Valentine? 💖</h2>
+    <button class="yes" onclick="startLoveGame()">YES 💍</button>
+    <button class="no" id="noBtn">NO 😈</button>
+</div>
+
+<!-- LOVE PERCENTAGE MINI GAME -->
+<div id="loveGame" class="card hidden">
+    <h2>Love Percentage 💖</h2>
+    <div style="display:flex; gap:10px; justify-content:center; margin-top:10px;">
+        <input type="text" id="name1" placeholder="Your Name">
+        <input type="text" id="name2" placeholder="Your Future Wife">
+    </div>
+    <button onclick="startLoveCalc()" style="margin-top:10px; background:#ff4d6d; color:white;">Check Love 💖</button>
+    <div id="loveResult" style="margin-top:20px; font-size:24px; font-weight:bold;"></div>
+    <div id="giftBox" style="
+      width:100px;height:100px;background:#ff4d6d;margin:20px auto;
+      border-radius:15px;display:flex;justify-content:center;align-items:center;
+      font-size:32px;cursor:pointer;">🎁
+    </div>
+    <div id="confettiArea" style="position:relative; width:100%; height:200px; overflow:hidden;"></div>
+</div>
+
+<!-- COUPON POPUP -->
+<div id="couponPopup" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; z-index:999;">
+    <div style="background:#111; padding:30px; border-radius:20px; text-align:center;">
+        <h3 id="couponTitle">Your Special Coupon 💖</h3>
+        <img id="couponImage" src="" style="width:250px;border-radius:15px;margin-top:15px;">
+        <p class="claim-text">📸 Screenshot untuk claim!</p>
+        <button onclick="closeCoupon()" style="margin-top:15px;background:#ff4d6d;color:white;">Close</button>
+    </div>
+</div>
+
+<!-- COUPON BUTTONS -->
+<div id="love" class="card hidden">
+    <h2>You just made me the happiest pretty gf 🥺🖤</h2>
+    <p>Choose your reward, BAGAS 💖</p>
+    <div style="display:flex; flex-direction:column; gap:10px; align-items:center; margin-top:10px;">
+        <button onclick="openCoupon('coupon1.png')" style="width:200px;">Free Hug</button>
+        <button onclick="openCoupon('coupon2.png')" style="width:200px;">Free Kiss</button>
+        <button onclick="openCoupon('coupon3.png')" style="width:200px;">Free Making Love</button>
+        <button onclick="openCoupon('coupon4.png')" style="width:200px;">Free Home-made Foods by ur GF</button>
+        <button id="endingBtn" style="margin-top:10px; width:200px; background:#ffb6c1; color:white; display:none;">See Ending 💌</button>
+    </div>
+    <img src="meandyou.jpg" alt="Us" style="width:230px; margin-top:15px; border-radius:15px;">
+</div>
+
+<!-- ENDING POPUP -->
+<div id="endingPopup" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:1002; flex-direction:column; opacity:0; transition:opacity 1.2s ease; padding:20px;">
+    <div style="background:#fff8e7; padding:30px 40px; border-radius:15px; box-shadow:0 20px 50px rgba(0,0,0,0.3); max-width:350px; text-align:center; font-family: 'Segoe UI', sans-serif; color:#4b3c2a; line-height:1.5;">
+        <p id="endingText">
+            Bagas… sometimes I fear that words are never enough to express how much I care for you.  
+            But look at this, see everything I’ve made for you, I hope it can convey one thing clearly:  
+            I love you, and I want you to always know it, without any doubt.  
+            You are truly special to me, and having you in my life makes every day brighter.
+        </p>
+        <button onclick="closeEndingPopup()" style="margin-top:20px; padding:10px 20px; border:none; border-radius:20px; background:#ff4d6d; color:white; font-size:16px; cursor:pointer;">Close</button>
+    </div>
+</div>
+
+<audio id="bgMusic" src="Loveme.mp3" loop></audio>
+
+<script>
+// ===== PASSWORD HP JADUL =====
+const birthday="9925"; 
+let pwdInput="";
+const numPad=document.getElementById("numPad");
+for(let i=1;i<=9;i++){
+    const btn=document.createElement("button");
+    btn.innerText=i;
+    btn.style.background="#555"; btn.style.color="white";
+    btn.addEventListener("click",()=>addDigit(i));
+    numPad.appendChild(btn);
+}
+const btn0=document.createElement("button"); btn0.innerText=0;
+btn0.style.background="#555"; btn0.style.color="white";
+btn0.addEventListener("click",()=>addDigit(0));
+numPad.appendChild(document.createElement("div"));
+numPad.appendChild(btn0); numPad.appendChild(document.createElement("div"));
+function addDigit(d){ if(pwdInput.length<6){pwdInput+=d; updateDisplay(); } }
+function deleteDigit(){ pwdInput=pwdInput.slice(0,-1); updateDisplay(); }
+function updateDisplay(){ document.getElementById("pwdDisplay").innerHTML="*".repeat(pwdInput.length); }
+function submitPassword(){ 
+    const errorMsg=document.getElementById("pwdError"); 
+    if(pwdInput===birthday){ 
+        document.getElementById("passwordScreen").classList.add("hidden"); 
+        const musicScreen=document.getElementById("musicScreen"); 
+        musicScreen.classList.remove("hidden"); 
+        setTimeout(()=>musicScreen.classList.add("show"),100); 
+        document.getElementById("bgMusic").play();
+    } else { 
+        errorMsg.style.display="block"; 
+        pwdInput=""; updateDisplay();
+    }
+}
+
+// ===== TYPING & START =====
+function startWebsite(){ document.getElementById("musicScreen").classList.add("hidden"); 
+const start=document.getElementById("start"); start.classList.remove("hidden"); setTimeout(()=>start.classList.add("show"),100); 
+typeText("Hi Bagas... I made this just for you 🤍"); }
+function typeText(text){ let i=0; const el=document.getElementById("typing"); el.innerHTML=""; const speed=60; 
+function typing(){ if(i<text.length){ el.innerHTML+=text.charAt(i); i++; setTimeout(typing,speed); } } typing(); }
+function showQuestion(){ document.getElementById("start").classList.add("hidden"); const q=document.getElementById("question"); q.classList.remove("hidden"); setTimeout(()=>q.classList.add("show"),100); }
+const noBtn=document.getElementById("noBtn"); 
+noBtn.addEventListener("mouseover",()=>{ const x=Math.random()*(window.innerWidth-120); const y=Math.random()*(window.innerHeight-60); noBtn.style.left=x+"px"; noBtn.style.top=y+"px"; });
+
+// ===== LOVE PERCENTAGE =====
+function startLoveGame(){ document.getElementById("question").classList.add("hidden"); 
+document.getElementById("loveGame").classList.remove("hidden"); setTimeout(()=>document.getElementById("loveGame").classList.add("show"),100); }
+
+function startLoveCalc(){
+    const n1=document.getElementById("name1").value.trim().toLowerCase();
+    const n2=document.getElementById("name2").value.trim().toLowerCase();
+    const result=document.getElementById("loveResult");
+
+    if((n1==="bagas" && n2==="reiora") || (n1==="reiora" && n2==="bagas")){
+        result.innerHTML="Calculating love... 💖";
+        let percent=0;
+        const interval=setInterval(()=>{
+            percent+=Math.floor(Math.random()*5)+1;
+            if(percent>=100) percent=100;
+            result.innerHTML=`Love Percentage: ${percent}% ❤️`;
+            if(percent===100){ 
+                clearInterval(interval); 
+                showGiftButtons(); 
+            }
+        },100);
+    } else {
+        result.innerHTML="Love Percentage: 0% 😢<br>You need to type your name and your future wife!";
+    }
+}
+
+// ===== SHOW COUPON BUTTONS =====
+function showGiftButtons(){
+    const giftBox=document.getElementById("giftBox");
+    giftBox.classList.add("pop");  // animasi POP
+    giftBox.innerHTML="🎉";
+    const area=document.getElementById("confettiArea");
+    for(let i=0;i<40;i++){ setTimeout(()=>spawnConfetti(area),i*100); }
+    setTimeout(()=>{
+        document.getElementById("loveGame").classList.add("hidden");
+        document.getElementById("love").classList.remove("hidden");
+        setTimeout(()=>document.getElementById("love").classList.add("show"),100);
+        giftBox.classList.remove("pop"); 
+        addEndingButton();
+    },1500);
+}
+
+// ===== CONFETTI =====
+function spawnConfetti(area){
+    const item=document.createElement("img");
+    const images=["chocolate.png","love.png"];
+    item.src=images[Math.floor(Math.random()*images.length)];
+    item.style.position="absolute";
+    item.style.width="40px";
+    item.style.height="40px";
+    item.style.left=Math.random()*90+"%";
+    item.style.top="0%";
+    area.appendChild(item);
+    let topPos=0; let leftPos=parseFloat(item.style.left);
+    const angle=(Math.random()-0.5)*4;
+    const fall=setInterval(()=>{
+        topPos+=3+Math.random()*2;
+        leftPos+=angle;
+        item.style.top=topPos+"%";
+        item.style.left=leftPos+"%";
+        if(topPos>100){item.remove(); clearInterval(fall);}
+    },30);
+}
+
+// ===== COUPON POPUP =====
+function openCoupon(image){
+    const popup=document.getElementById("couponPopup");
+    document.getElementById("couponImage").src=image;
+    popup.classList.remove("hidden");
+}
+function closeCoupon(){
+    document.getElementById("couponPopup").classList.add("hidden");
+}
+
+// ===== ENDING =====
+function addEndingButton(){
+    const btn=document.getElementById("endingBtn");
+    btn.style.display="inline-block";
+    btn.addEventListener("click",()=>{
+        showEndingPopup();
+        btn.style.display="none";
+    });
+}
+function showEndingPopup(){
+    const popup=document.getElementById("endingPopup");
+    popup.classList.remove("hidden");
+    setTimeout(()=>popup.style.opacity="1",100);
+}
+function closeEndingPopup(){
+    const popup=document.getElementById("endingPopup");
+    popup.style.opacity="0";
+    setTimeout(()=>popup.classList.add("hidden"),600);
+}
+
+// ===== FLOATING HEARTS =====
+setInterval(()=>{
+    const heart=document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML="💖";
+    heart.style.left=Math.random()*100+"vw";
+    heart.style.fontSize=(Math.random()*20+15)+"px";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),8000);
+},800);
+</script>
+
+</body>
+</html>
